@@ -1,0 +1,21 @@
+{
+  "name": "register_login_with_nodejs",
+  "version": "1.0.0",
+  "description": "login/registration with node.js",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-form-data": "^2.0.14",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.2",
+    "nodemon": "^2.0.5"
+  }
+}
