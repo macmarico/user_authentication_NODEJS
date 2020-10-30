@@ -245,7 +245,7 @@ width: 100%;
     let h = new Headers();
         h.append('Authorization', `${token}`);
     let req = new Request(url, {
-          method: 'POST',
+          method: 'GET',
           headers: h,
           mode: 'cors',
       });
@@ -260,7 +260,7 @@ width: 100%;
 
    async function logout(){
     await sessionStorage.removeItem('token');
-    window.location.href = "demo.html";
+    window.location.href = "index.html";
 
    }
 

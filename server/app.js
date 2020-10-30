@@ -1,16 +1,34 @@
 const express = require('express');
 const formData = require("express-form-data");
+const path = require('path');
 const cors = require('cors');
 const jwt = require ('jsonwebtoken');
 const users = require('./data.js').users;
 
 const bcrypt = require('bcrypt');
+const { static } = require('express');
 const saltRounds = 13;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+let options = {
+    dotfiles: "ignore", //allow, deny, ignore
+    etag: true,
+    extensions: ["htm", "html"],
+    index: false, //to disable directory indexing
+    maxAge: "7d",
+    redirect: false,
+    setHeaders: function(res, path, stat) {
+      //add this header to all static responses
+      res.set("x-timestamp", Date.now());
+    }
+  };
+
+
 app.use(formData.parse());
 app.use(cors());
+app.use(express.static('client',options));
 
 app.post('/register', async (req, res)=>{
     const userMatch = users.find((user)=> req.body.username === user.username);
@@ -96,9 +114,10 @@ app.post('/login', async (req, res)=>{
 });
 
 
-app.post('/', (req, res)=>{
+app.get('/', (req, res)=>{
     const header = req.header('Authorization');
     console.log(header);
+    if(header){
     const[type, token] = header.split(' ');
     if(type === 'bearer' && typeof token !== 'undefined'){
         try{
@@ -118,6 +137,7 @@ app.post('/', (req, res)=>{
                 status : false,
                 message : 'Invalid or expired token.',
             }
+            console.log('Invalid token');
             res.status(401).send(JSON.stringify(myObj));
         
         }
@@ -132,6 +152,10 @@ app.post('/', (req, res)=>{
 
 
     }
+}else{
+
+    res.sendFile(path.resolve('client/index.html'));
+}
 
 });
 
