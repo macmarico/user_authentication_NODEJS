@@ -18,5 +18,14 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.2",
     "nodemon": "^2.0.5"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/macmarico/user_authentication_NODEJS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/macmarico/user_authentication_NODEJS/issues"
+  },
+  "homepage": "https://github.com/macmarico/user_authentication_NODEJS#readme"
 }
