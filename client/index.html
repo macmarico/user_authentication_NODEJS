@@ -203,7 +203,7 @@ width: 100%;
         ev.preventDefault();
         let loginForm = ev.target;
         let fd = new FormData(loginForm);
-        const url = 'http://localhost:3000/login';
+        const url = 'https://userauthenticationnode.herokuapp.com/login';
         let verify = await nav.authenticate(url,fd);
         if(verify.status == true){
             nav.home(verify.username);
@@ -217,7 +217,7 @@ width: 100%;
     
     async function register(ev) {
         ev.preventDefault();
-        const url = 'http://localhost:3000/register';
+        const url = 'https://userauthenticationnode.herokuapp.com/register';
         let loginForm = ev.target;
         let fd = new FormData(loginForm);
         if(fd.get('password') == fd.get('confirmPassword')){
