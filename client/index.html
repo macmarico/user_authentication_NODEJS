@@ -163,6 +163,7 @@ width: 100%;
     document.getElementById("loginSec").style.display = "none";
     document.getElementById("registerSec").style.display = "block";
     document.getElementsByTagName("h1")[0].innerHTML = "REGISTER";
+    document.getElementById("clickReg").innerHTML = "LOGIN";
    },
    loginSec(){
     document.getElementById("loginSec").style.display = "block";
@@ -239,7 +240,7 @@ width: 100%;
     }
 
   async function tokenAuth(){
-    const url = 'http://localhost:3000/';
+    const url = 'https://userauthenticationnode.herokuapp.com/';
     let token = await sessionStorage.getItem('token');
     if(token){
     let h = new Headers();
