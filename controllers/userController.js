@@ -1,6 +1,11 @@
 import asyncHandler from "express-async-handler";
-import generateToken from "./../utils/generateToken.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "./../utils/generateToken.js";
 import User from "./../models/usersModel.js";
+import RefreshToken from "./../models/refreshTokenModel.js";
+import jwt from "jsonwebtoken";
 
 // @desc Auth user & get token
 // @route POST /api/user/login
@@ -11,12 +16,21 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
+    const refreshToken = generateRefreshToken(user._id);
+    const refreshTokenSaved = RefreshToken.create({
+      refreshToken,
+    });
+    if (!refreshTokenSaved) {
+      res.status(500);
+      throw new Error("Internal server errror");
+    }
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id),
+      accessToken: generateAccessToken(user._id),
+      refreshToken,
     });
   } else {
     res.status(401);
@@ -48,7 +62,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      token: generateAccessToken(user._id),
     });
   } else {
     res.status(400);
@@ -74,4 +88,27 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, registerUser, getUserProfile };
+// @desc Refresh token
+// @route POST /api/users/RefreshToken
+// @access private
+
+const refreshToken = asyncHandler(async (req, res) => {
+  const refreshToken = req.header("x-auth-token");
+  if (!refreshToken) {
+    res.status(401);
+    throw new Error("Token not found");
+  }
+  const tokenValid = await RefreshToken.findOne({ refreshToken });
+  if (!tokenValid) {
+    res.status(403);
+    throw new Error("Token invalid");
+  }
+  const user = await jwt.verify(refreshToken, process.env.JWT_SECRET);
+  const { id } = user;
+  const accessToken = generateAccessToken(id);
+  res.json({
+    accessToken,
+  });
+});
+
+export { authUser, registerUser, getUserProfile, refreshToken };
